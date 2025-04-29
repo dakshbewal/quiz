@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Choose Quiz{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4 p-4 bg-light">
+                <h2 class="text-center mb-4 fw-bold text-primary">🎯 Start Your Quiz Journey</h2>
+                <p class="text-center text-muted mb-4">Select your preferences to begin the challenge!</p>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">📚 Category</label>
+                        <select name="category" class="form-select shadow-sm" required>
+                            <option value="">-- Select Category --</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">🎯 Difficulty</label>
+                        <select name="difficulty" class="form-select shadow-sm" required>
+                            <option value="">-- Select Difficulty --</option>
+                            <option value="easy">Easy 😌</option>
+                            <option value="medium">Medium 🤔</option>
+                            <option value="hard">Hard 🔥</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">❓ Number of Questions</label>
+                        <input type="number" name="num_questions" class="form-control shadow-sm" min="1" max="20" value="5" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold gradient-btn">
+                        🚀 Start Quiz
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .gradient-btn {
+        background: linear-gradient(to right, #4e54c8, #8f94fb);
+        border: none;
+        transition: 0.3s ease;
+    }
+
+    .gradient-btn:hover {
+        background: linear-gradient(to right, #8f94fb, #4e54c8);
+        transform: scale(1.03);
+    }
+
+    select:invalid, input:invalid {
+        border-color: #dc3545;
+    }
+</style>
+{% endblock %}

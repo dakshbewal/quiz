@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .result-container {
+        max-width: 800px;
+        margin: auto;
+        background: #f8f9fa;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .question-block {
+        text-align: left;
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .text-success {
+        font-weight: bold;
+        color: #28a745 !important;
+    }
+
+    .text-danger {
+        font-weight: bold;
+        color: #dc3545 !important;
+    }
+
+    .btn-retry {
+        background-color: #007bff;
+        color: white;
+        padding: 12px 25px;
+        font-size: 18px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-retry:hover {
+        background-color: #0056b3;
+    }
+
+    .score-badge {
+        font-size: 24px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #17a2b8;
+        padding: 10px 20px;
+        border-radius: 10px;
+        display: inline-block;
+        margin: 20px 0;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="result-container">
+        <h2>🏁 Quiz Results</h2>
+        <div class="score-badge">
+            🧠 Score: {{ score }}/{{ total }}
+        </div>
+        <hr>
+
+        {% for result in results %}
+        <div class="question-block">
+            <p><strong>Q{{ forloop.counter }}:</strong> {{ result.question }}</p>
+            <p><strong>Your Answer:</strong> 
+                {% if result.is_correct %}
+                    <span class="text-success">{{ result.selected_answer }}</span>
+                {% else %}
+                    <span class="text-danger">{{ result.selected_answer }}</span>
+                {% endif %}
+            </p>
+            <p><strong>Correct Answer:</strong> <span class="text-success">{{ result.correct_answer }}</span></p>
+            {% if result.is_correct %}
+                <p class="text-success">✅ Correct!</p>
+            {% else %}
+                <p class="text-danger">❌ Wrong Answer!</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <a href="{% url 'select_category' %}" class="btn-retry mt-3">🔄 Try Again</a>
+    </div>
+</div>
+{% endblock %}
