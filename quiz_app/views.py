@@ -9,6 +9,33 @@ from django.contrib import messages
 
 
 
+category_map = {
+    9: 'General Knowledge',
+    10: 'Entertainment: Books',
+    11: 'Entertainment: Film',
+    12: 'Entertainment: Music',
+    13: 'Entertainment: Musicals & Theatres',
+    14: 'Entertainment: Television',
+    15: 'Entertainment: Video Games',
+    16: 'Entertainment: Board Games',
+    17: 'Science & Nature',
+    18: 'Science: Computers',
+    19: 'Science: Mathematics',
+    20: 'Mythology',
+    21: 'Sports',
+    22: 'Geography',
+    23: 'History',
+    24: 'Politics',
+    25: 'Art',
+    26: 'Celebrities',
+    27: 'Animals',
+    28: 'Vehicles',
+    29: 'Entertainment: Comics',
+    30: 'Science: Gadgets',
+    31: 'Entertainment: Japanese Anime & Manga',
+    32: 'Entertainment: Cartoon & Animations'
+}
+
 def register_view(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -52,15 +79,19 @@ def select_category(request):
 
 
     categories = response.json().get('trivia_categories', [])
+    print(categories)
 
     if request.method == "POST":
         category = request.POST.get('category')
         difficulty = request.POST.get('difficulty')
         num_questions   = request.POST.get('num_questions')
+        # categoryName = category_map.get(int(category), "General Knowledge")
 
         return redirect('quiz_page', category, difficulty, num_questions)
 
     return render(request, 'select_category.html', {'categories': categories})
+
+
 
 
 @login_required(login_url="login")
@@ -73,10 +104,12 @@ def quiz_page(request, category_id, difficulty,num_questions ):
         "difficulty": difficulty,
         "type": "multiple"
     }
+    categoryName = category_map.get(int(category_id), "General Knowledge")
 
     response = requests.get(api_url, params=params)
     if response.status_code == 200:
-        questions = response.json().get("results", [])
+        questions = response.json()["results"]
+        # print(response.json())
 
         for question in questions:
             # Decode HTML entities
@@ -93,7 +126,8 @@ def quiz_page(request, category_id, difficulty,num_questions ):
 
         return render(request, "quiz.html", {"questions": questions,"num_questions": num_questions,
     "category_id": category_id,
-    "difficulty": difficulty})
+    "difficulty": difficulty,
+    "categoryName": categoryName})
     
     return JsonResponse({"error": "Failed to fetch questions"}, status=500)
 
